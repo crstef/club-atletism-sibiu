@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase-server'
 
 export const dynamic = 'force-dynamic'
 
+// Force Vercel rebuild - remove after successful deploy
+
 async function getAtleti() {
   try {
     const supabase = await createClient()
