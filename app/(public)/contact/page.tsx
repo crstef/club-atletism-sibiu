@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 // Zod schemas for form validation
 const contactSchema = z.object({
   nume: z.string().min(2, 'Numele trebuie să aibă minim 2 caractere'),
@@ -67,6 +69,13 @@ export default function Contact() {
     setSubmitStatus('idle')
     
     try {
+      if (!supabase) {
+        console.log('Contact form data (Supabase not configured):', data)
+        setSubmitStatus('success')
+        contactForm.reset()
+        return
+      }
+
       const { error } = await supabase
         .from('mesaje_contact')
         .insert([
@@ -109,6 +118,13 @@ Cerere de înscriere:
 - Experiență anterioară: ${data.experienta}
 ${data.observatii ? `- Observații: ${data.observatii}` : ''}
       `.trim()
+
+      if (!supabase) {
+        console.log('Registration form data (Supabase not configured):', { data, mesajInscriere })
+        setSubmitStatus('success')
+        inscriereaForm.reset()
+        return
+      }
 
       const { error } = await supabase
         .from('mesaje_contact')

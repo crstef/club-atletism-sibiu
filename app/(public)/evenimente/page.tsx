@@ -4,6 +4,8 @@ import { Calendar, MapPin, Users } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 
+export const dynamic = 'force-dynamic'
+
 async function getEvenimente() {
   try {
     const supabase = await createClient()

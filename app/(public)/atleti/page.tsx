@@ -4,6 +4,8 @@ import { Trophy, Medal, Award, User } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 
+export const dynamic = 'force-dynamic'
+
 async function getAtleti() {
   try {
     const supabase = await createClient()
@@ -186,7 +188,7 @@ export default async function Atleti() {
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6">Atleți de top</h2>
           <div className="grid lg:grid-cols-3 gap-6">
-            {atleti.filter(atlet => atlet.featured).map((atlet) => (
+            {atletiData.filter(atlet => atlet.featured).map((atlet) => (
               <Card key={atlet.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-48 bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white">
                   <div className="text-center">
@@ -248,7 +250,7 @@ export default async function Atleti() {
         <div>
           <h2 className="text-2xl font-bold mb-6">Toți atleții</h2>
           <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
-            {atleti.map((atlet) => (
+            {atletiData.map((atlet) => (
               <Card key={atlet.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-32 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
                   <User className="h-12 w-12 text-primary" />
@@ -286,13 +288,13 @@ export default async function Atleti() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl font-bold text-primary mb-2">
-                {atleti.length}
+                {atletiData.length}
               </div>
               <div className="text-muted-foreground">Atleți activi</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-primary mb-2">
-                {atleti.reduce((acc, atlet) => acc + atlet.medalii, 0)}
+                {atletiData.reduce((acc, atlet) => acc + atlet.medalii, 0)}
               </div>
               <div className="text-muted-foreground">Total medalii</div>
             </div>

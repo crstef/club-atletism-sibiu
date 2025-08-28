@@ -4,6 +4,8 @@ import { Calendar, User } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 
+export const dynamic = 'force-dynamic'
+
 async function getStiri() {
   try {
     const supabase = await createClient()
