@@ -1,186 +1,236 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { 
   Users, 
   Calendar, 
   Trophy, 
   FileText, 
-  TrendingUp,
+  Settings, 
+  Database, 
+  Image,
+  BarChart3,
   Plus,
+  Edit,
+  Download,
   Eye,
-  Edit
-} from 'lucide-react'
-import Link from 'next/link'
+  Filter,
+  Search,
+  Bell,
+  Palette,
+  Globe,
+  Shield,
+  ArrowUpRight
+} from 'lucide-react';
 
 export default function AdminDashboard() {
-  const statistici = [
-    {
-      titlu: "Atleți activi",
-      valoare: "152",
-      schimbare: "+12",
-      tendinta: "up",
-      icon: Users
+  const stats = [
+    { 
+      title: "Total Atleți", 
+      value: "247", 
+      change: "+12%", 
+      icon: <Users className="h-8 w-8" />,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50"
     },
-    {
-      titlu: "Evenimente luna aceasta",
-      valoare: "8",
-      schimbare: "+3",
-      tendinta: "up",
-      icon: Calendar
+    { 
+      title: "Evenimente Active", 
+      value: "8", 
+      change: "+2", 
+      icon: <Calendar className="h-8 w-8" />,
+      color: "text-green-600",
+      bgColor: "bg-green-50"
     },
-    {
-      titlu: "Medalii anul acesta",
-      valoare: "34",
-      schimbare: "+8",
-      tendinta: "up",
-      icon: Trophy
+    { 
+      title: "Medalii Anul Acesta", 
+      value: "89", 
+      change: "+23%", 
+      icon: <Trophy className="h-8 w-8" />,
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50"
     },
-    {
-      titlu: "Articole publicate",
-      valoare: "23",
-      schimbare: "+5",
-      tendinta: "up",
-      icon: FileText
+    { 
+      title: "Articole Publicate", 
+      value: "156", 
+      change: "+8", 
+      icon: <FileText className="h-8 w-8" />,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50"
     }
-  ]
+  ];
 
-  const activitateRecenta = [
+  const quickActions = [
     {
-      tip: "inscriere",
-      descriere: "Nou atlet înscris: Maria Popescu (Copii)",
-      timp: "Acum 2 ore",
-      icon: Users
+      title: "Gestionare Atleți",
+      description: "Adaugă, editează sau vezi profilurile atleților",
+      icon: <Users className="h-6 w-6" />,
+      href: "/admin/atleti",
+      color: "bg-blue-600 hover:bg-blue-700",
+      actions: [
+        { label: "Adaugă Atlet", href: "/admin/atleti/nou" },
+        { label: "Lista Completă", href: "/admin/atleti" },
+        { label: "Export Date", href: "/admin/atleti/export" }
+      ]
     },
     {
-      tip: "eveniment",
-      descriere: "Eveniment creat: Concurs de sărituri - 28 Aprilie",
-      timp: "Acum 3 ore",
-      icon: Calendar
+      title: "Evenimente",
+      description: "Programează și gestionează competițiile",
+      icon: <Calendar className="h-6 w-6" />,
+      href: "/admin/evenimente",
+      color: "bg-green-600 hover:bg-green-700",
+      actions: [
+        { label: "Eveniment Nou", href: "/admin/evenimente/nou" },
+        { label: "Calendarul", href: "/admin/evenimente" },
+        { label: "Arhiva", href: "/admin/evenimente/arhiva" }
+      ]
     },
     {
-      tip: "articol",
-      descriere: "Articol publicat: Medalii de aur la Regional",
-      timp: "Ieri",
-      icon: FileText
+      title: "Știri & Conținut",
+      description: "Publică și gestionează articolele",
+      icon: <FileText className="h-6 w-6" />,
+      href: "/admin/continut",
+      color: "bg-purple-600 hover:bg-purple-700",
+      actions: [
+        { label: "Articol Nou", href: "/admin/continut/nou" },
+        { label: "Draft-uri", href: "/admin/continut/drafts" },
+        { label: "Publicat", href: "/admin/continut/published" }
+      ]
     },
     {
-      tip: "rezultat",
-      descriere: "Rezultate actualizate pentru Campionatul Regional",
-      timp: "Acum 2 zile",
-      icon: Trophy
+      title: "Galerie Media",
+      description: "Upload și organizare poze/videouri",
+      icon: <Image className="h-6 w-6" />,
+      href: "/admin/galerie",
+      color: "bg-orange-600 hover:bg-orange-700",
+      actions: [
+        { label: "Upload Poze", href: "/admin/galerie/upload" },
+        { label: "Organizare", href: "/admin/galerie" },
+        { label: "Backup", href: "/admin/galerie/backup" }
+      ]
+    },
+    {
+      title: "Rezultate & Clasamente",
+      description: "Înregistrează performanțele și rezultatele",
+      icon: <Trophy className="h-6 w-6" />,
+      href: "/admin/rezultate",
+      color: "bg-yellow-600 hover:bg-yellow-700",
+      actions: [
+        { label: "Adaugă Rezultat", href: "/admin/rezultate/nou" },
+        { label: "Clasamente", href: "/admin/rezultate" },
+        { label: "Statistici", href: "/admin/rezultate/stats" }
+      ]
+    },
+    {
+      title: "Setări Site",
+      description: "Customizează aspectul și funcționalitățile",
+      icon: <Settings className="h-6 w-6" />,
+      href: "/admin/setari",
+      color: "bg-gray-600 hover:bg-gray-700",
+      actions: [
+        { label: "Personalizare", href: "/admin/setari/design" },
+        { label: "SEO", href: "/admin/setari/seo" },
+        { label: "Backup", href: "/admin/setari/backup" }
+      ]
     }
-  ]
+  ];
 
-  const actiuniRapide = [
-    {
-      titlu: "Adaugă atlet nou",
-      descriere: "Înregistrează un nou membru al clubului",
-      href: "/admin/atleti/nou",
-      icon: Users,
-      color: "bg-blue-500"
-    },
-    {
-      titlu: "Creează eveniment",
-      descriere: "Organizează o nouă competiție sau antrenament",
-      href: "/admin/evenimente/nou",
-      icon: Calendar,
-      color: "bg-green-500"
-    },
-    {
-      titlu: "Scrie articol",
-      descriere: "Publică o nouă știre sau anunț",
-      href: "/admin/continut/nou",
-      icon: FileText,
-      color: "bg-purple-500"
-    },
-    {
-      titlu: "Vezi rapoarte",
-      descriere: "Analizează performanțele și statisticile",
-      href: "/admin/rapoarte",
-      icon: TrendingUp,
-      color: "bg-orange-500"
-    }
-  ]
+  const recentActivity = [
+    { action: "Nou atlet înregistrat", details: "Andrei Popescu - Categoria Juniori", time: "2 ore", type: "user" },
+    { action: "Eveniment actualizat", details: "Cupa de Primăvară - Locația modificată", time: "4 ore", type: "event" },
+    { action: "Articol publicat", details: "Rezultate Campionatul Regional", time: "6 ore", type: "content" },
+    { action: "Poze încărcate", details: "25 fotografii - Galeria Antrenamente", time: "1 zi", type: "media" },
+    { action: "Rezultate adăugate", details: "Competiția de sărituri - 12 rezultate", time: "2 zile", type: "results" }
+  ];
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Admin Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold">Dashboard Admin</h1>
-              <p className="text-muted-foreground">Bun venit în panoul de administrare Club Atletism Sibiu</p>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard Admin</h1>
+              <p className="text-gray-600 text-lg">Bine ai venit! Aici poți gestiona întregul site al clubului.</p>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" asChild>
-                <Link href="/">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Vezi site-ul
-                </Link>
+              <Button variant="outline" size="sm">
+                <Bell className="h-4 w-4 mr-2" />
+                Notificări (3)
               </Button>
-              <Button asChild>
-                <Link href="/admin/continut/nou">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Conținut nou
-                </Link>
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="h-4 w-4 mr-2" />
+                Acțiune rapidă
               </Button>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {statistici.map((stat, index) => (
-            <Card key={index} className="hover:shadow-md transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.titlu}
-                </CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.valoare}</div>
-                <div className="flex items-center text-xs text-muted-foreground">
-                  <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
-                  <span className="text-green-500">{stat.schimbare}</span>
-                  <span className="ml-1">față de luna trecută</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <Card key={index} className="border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 mb-1">{stat.title}</p>
+                      <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                      <p className="text-sm text-green-600 font-medium">{stat.change} luna aceasta</p>
+                    </div>
+                    <div className={`${stat.bgColor} ${stat.color} p-3 rounded-xl`}>
+                      {stat.icon}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
+        {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Quick Actions */}
+          
+          {/* Quick Actions - Span 2 columns */}
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="border-0 shadow-md">
               <CardHeader>
-                <CardTitle>Acțiuni rapide</CardTitle>
-                <CardDescription>
-                  Acțiuni frecvente pentru administrarea clubului
-                </CardDescription>
+                <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
+                  <Settings className="h-6 w-6 mr-3 text-blue-600" />
+                  Gestionare Conținut
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {actiuniRapide.map((actiune, index) => (
-                    <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {quickActions.map((action, index) => (
+                    <Card key={index} className="border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-300 group">
                       <CardContent className="p-6">
-                        <div className="flex items-start gap-4">
-                          <div className={`w-10 h-10 ${actiune.color} rounded-lg flex items-center justify-center`}>
-                            <actiune.icon className="h-5 w-5 text-white" />
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`${action.color} text-white p-3 rounded-xl group-hover:scale-110 transition-transform duration-300`}>
+                            {action.icon}
                           </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold mb-1">{actiune.titlu}</h3>
-                            <p className="text-sm text-muted-foreground mb-3">{actiune.descriere}</p>
-                            <Button size="sm" variant="outline" asChild>
-                              <Link href={actiune.href}>
-                                Începe
+                          <Button variant="ghost" size="sm" asChild>
+                            <Link href={action.href}>
+                              <ArrowUpRight className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </div>
+                        
+                        <h3 className="font-bold text-lg text-gray-900 mb-2">{action.title}</h3>
+                        <p className="text-gray-600 text-sm mb-4">{action.description}</p>
+                        
+                        <div className="space-y-2">
+                          {action.actions.map((subAction, subIndex) => (
+                            <Button
+                              key={subIndex}
+                              variant="ghost"
+                              size="sm"
+                              className="w-full justify-start text-left h-8 text-gray-700 hover:text-blue-600 hover:bg-blue-50"
+                              asChild
+                            >
+                              <Link href={subAction.href}>
+                                <Plus className="h-3 w-3 mr-2" />
+                                {subAction.label}
                               </Link>
                             </Button>
-                          </div>
+                          ))}
                         </div>
                       </CardContent>
                     </Card>
@@ -188,154 +238,97 @@ export default function AdminDashboard() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Performance Overview */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>Performanțe recente</CardTitle>
-                <CardDescription>
-                  Rezultatele obținute de atleți în ultimele competiții
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center">
-                        <Trophy className="h-4 w-4 text-yellow-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Andrei Popescu</h4>
-                        <p className="text-sm text-muted-foreground">Locul 1 - Săritura în lungime</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold">7.85m</div>
-                      <div className="text-xs text-muted-foreground">Record personal</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                        <Trophy className="h-4 w-4 text-gray-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Maria Ionescu</h4>
-                        <p className="text-sm text-muted-foreground">Locul 2 - 800m</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold">2:15.34</div>
-                      <div className="text-xs text-muted-foreground">Campionatul Regional</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
-                        <Trophy className="h-4 w-4 text-amber-800" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Ștafeta 4x100m</h4>
-                        <p className="text-sm text-muted-foreground">Locul 3 - Juniori</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold">42.18s</div>
-                      <div className="text-xs text-muted-foreground">Sezon 2024</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <Button variant="outline" className="w-full">
-                    <Link href="/admin/rezultate">Vezi toate rezultatele</Link>
-                  </Button>
-                  <Button variant="outline" size="sm" className="ml-2">
-                    <Link href="/admin/export/rezultate">📊 Export Excel</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
-          {/* Recent Activity */}
-          <div>
-            <Card>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            
+            {/* Quick Links */}
+            <Card className="border-0 shadow-md">
               <CardHeader>
-                <CardTitle>Activitate recentă</CardTitle>
-                <CardDescription>
-                  Ultimele modificări și actualizări
-                </CardDescription>
+                <CardTitle className="text-lg font-bold text-gray-900">Acces Rapid</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link href="/admin/setari/design">
+                    <Palette className="h-4 w-4 mr-2" />
+                    Personalizare Design
+                  </Link>
+                </Button>
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link href="/admin/export/rezultate">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export Rapoarte
+                  </Link>
+                </Button>
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link href="/" target="_blank">
+                    <Globe className="h-4 w-4 mr-2" />
+                    Vezi Site Public
+                  </Link>
+                </Button>
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link href="/admin/backup">
+                    <Database className="h-4 w-4 mr-2" />
+                    Backup Date
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card className="border-0 shadow-md">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold text-gray-900">Activitate Recentă</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {activitateRecenta.map((activitate, index) => (
+                  {recentActivity.map((activity, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mt-1">
-                        <activitate.icon className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm">{activitate.descriere}</p>
-                        <p className="text-xs text-muted-foreground">{activitate.timp}</p>
+                      <div className={`w-2 h-2 rounded-full mt-2 ${
+                        activity.type === 'user' ? 'bg-blue-500' :
+                        activity.type === 'event' ? 'bg-green-500' :
+                        activity.type === 'content' ? 'bg-purple-500' :
+                        activity.type === 'media' ? 'bg-orange-500' :
+                        'bg-yellow-500'
+                      }`}></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                        <p className="text-xs text-gray-600">{activity.details}</p>
+                        <p className="text-xs text-gray-400 mt-1">acum {activity.time}</p>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4">
-                  <Button variant="outline" size="sm" className="w-full">
-                    Vezi istoric complet
-                  </Button>
-                </div>
+                <Button variant="ghost" size="sm" className="w-full mt-4">
+                  Vezi toate activitățile
+                </Button>
               </CardContent>
             </Card>
 
-            {/* Upcoming Events */}
-            <Card className="mt-6">
+            {/* System Status */}
+            <Card className="border-0 shadow-md">
               <CardHeader>
-                <CardTitle>Evenimente viitoare</CardTitle>
-                <CardDescription>
-                  Competiții și antrenamente programate
-                </CardDescription>
+                <CardTitle className="text-lg font-bold text-gray-900">Status Sistem</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <h4 className="font-medium text-sm">Campionatul Județean</h4>
-                      <p className="text-xs text-muted-foreground">15 Aprilie 2024</p>
-                    </div>
-                    <Button size="sm" variant="ghost" asChild>
-                      <Link href="/admin/evenimente/1">
-                        <Edit className="h-3 w-3" />
-                      </Link>
-                    </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Site Status</span>
+                    <span className="text-sm font-medium text-green-600">● Online</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <h4 className="font-medium text-sm">Cros de Paste</h4>
-                      <p className="text-xs text-muted-foreground">20 Aprilie 2024</p>
-                    </div>
-                    <Button size="sm" variant="ghost" asChild>
-                      <Link href="/admin/evenimente/2">
-                        <Edit className="h-3 w-3" />
-                      </Link>
-                    </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Database</span>
+                    <span className="text-sm font-medium text-green-600">● Conectat</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <h4 className="font-medium text-sm">Concurs Sărituri</h4>
-                      <p className="text-xs text-muted-foreground">28 Aprilie 2024</p>
-                    </div>
-                    <Button size="sm" variant="ghost" asChild>
-                      <Link href="/admin/evenimente/3">
-                        <Edit className="h-3 w-3" />
-                      </Link>
-                    </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Backup</span>
+                    <span className="text-sm font-medium text-green-600">● Actualizat</span>
                   </div>
-                </div>
-                <div className="mt-4">
-                  <Button variant="outline" size="sm" className="w-full" asChild>
-                    <Link href="/admin/evenimente">Gestionează evenimente</Link>
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Securitate</span>
+                    <span className="text-sm font-medium text-green-600">● Securizat</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -343,5 +336,5 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }
