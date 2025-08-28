@@ -2,94 +2,138 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Trophy, Medal, Award, User } from 'lucide-react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase-server'
 
-export default function Atleti() {
-  const atleti = [
+async function getAtleti() {
+  try {
+    const supabase = await createClient()
+    const { data: atleti, error } = await supabase
+      .from('atleti')
+      .select(`
+        *,
+        realizari (
+          descriere,
+          data_realizare
+        )
+      `)
+      .order('featured', { ascending: false })
+      .order('medalii', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching atleti:', error)
+      return []
+    }
+
+    return atleti || []
+  } catch (error) {
+    console.error('Error connecting to database:', error)
+    return []
+  }
+}
+
+export default async function Atleti() {
+  const atleti = await getAtleti()
+
+  // Fallback data in case database is not available
+  const fallbackAtleti = [
     {
-      id: 1,
-      nume: "Andrei Popescu",
+      id: "1",
+      nume: "Andrei",
+      prenume: "Popescu", 
       varsta: 19,
       categorie: "Juniori I",
       specializare: "Sărituri",
       antrenor: "Daniel Radu",
-      recordPersonal: "7.85m (săritura în lungime)",
-      realizari: ["Record național U20", "Campion regional 2024", "Calificare Europene U20"],
+      record_personal: "7.85m (săritura în lungime)",
+      realizari: [
+        { id: "1", atlet_id: "1", descriere: "Record național U20" },
+        { id: "2", atlet_id: "1", descriere: "Campion regional 2024" },
+        { id: "3", atlet_id: "1", descriere: "Calificare Europene U20" }
+      ],
       medalii: 12,
-      aniExperienta: 6,
-      imagine: "/placeholder-athlete1.jpg",
+      ani_experienta: 6,
+      imagine_url: "/placeholder-athlete1.jpg",
       featured: true
     },
     {
-      id: 2,
-      nume: "Maria Ionescu",
+      id: "2",
+      nume: "Maria",
+      prenume: "Ionescu",
       varsta: 17,
       categorie: "Junioare II",
       specializare: "Mijlociu fond",
       antrenor: "Ioana Mărcuț",
-      recordPersonal: "2:12.45 (800m)",
-      realizari: ["Vicecampioană națională", "Record județean", "3x podium regional"],
+      record_personal: "2:12.45 (800m)",
+      realizari: [
+        { descriere: "Vicecampioană națională" },
+        { descriere: "Record județean" },
+        { descriere: "3x podium regional" }
+      ],
       medalii: 8,
-      aniExperienta: 4,
-      imagine: "/placeholder-athlete2.jpg",
+      ani_experienta: 4,
+      imagine_url: "/placeholder-athlete2.jpg",
       featured: true
     },
     {
-      id: 3,
-      nume: "Alexandru Radu",
+      id: "3",
+      nume: "Alexandru",
+      prenume: "Radu",
       varsta: 12,
       categorie: "Copii",
       specializare: "Aruncări",
       antrenor: "Alexandru Ionescu",
-      recordPersonal: "47.30m (aruncarea mingii)",
-      realizari: ["Campion județean", "Record de categorie", "Talent identificat COSR"],
+      record_personal: "47.30m (aruncarea mingii)",
+      realizari: [
+        { descriere: "Campion județean" },
+        { descriere: "Record de categorie" },
+        { descriere: "Talent identificat COSR" }
+      ],
       medalii: 5,
-      aniExperienta: 2,
-      imagine: "/placeholder-athlete3.jpg",
+      ani_experienta: 2,
+      imagine_url: "/placeholder-athlete3.jpg",
       featured: false
     },
     {
-      id: 4,
-      nume: "Elena Marinescu",
+      id: "4",
+      nume: "Elena",
+      prenume: "Marinescu",
       varsta: 15,
       categorie: "Junioare III",
       specializare: "Sărituri",
       antrenor: "Marius Teodorescu",
-      recordPersonal: "1.70m (săritura în înălțime)",
-      realizari: ["Campioană regională", "Locul 3 național", "Record personal 2024"],
+      record_personal: "1.70m (săritura în înălțime)",
+      realizari: [
+        { descriere: "Campioană regională" },
+        { descriere: "Locul 3 național" },
+        { descriere: "Record personal 2024" }
+      ],
       medalii: 6,
-      aniExperienta: 3,
-      imagine: "/placeholder-athlete4.jpg",
+      ani_experienta: 3,
+      imagine_url: "/placeholder-athlete4.jpg",
       featured: false
     },
     {
-      id: 5,
+      id: "5",
       nume: "Cristian Popescu",
       varsta: 22,
       categorie: "Seniori",
       specializare: "Sprint",
       antrenor: "Gheorghe Marinescu",
-      recordPersonal: "10.58s (100m)",
-      realizari: ["Participare Balcaniada", "Record național 4x100m", "Multiplu campion"],
+      record_personal: "10.58s (100m)",
+      realizari: [
+        { descriere: "Participare Balcaniada" },
+        { descriere: "Record național 4x100m" },
+        { descriere: "Multiplu campion" }
+      ],
       medalii: 15,
-      aniExperienta: 8,
-      imagine: "/placeholder-athlete5.jpg",
+      ani_experienta: 8,
+      imagine_url: "/placeholder-athlete5.jpg",
       featured: true
-    },
-    {
-      id: 6,
-      nume: "Ana Dumitrescu",
-      varsta: 14,
-      categorie: "Junioare III",
-      specializare: "Lungul fond",
-      antrenor: "Maria Popescu",
-      recordPersonal: "4:45.20 (1500m)",
-      realizari: ["Campioană județeană", "Locul 2 regional", "Progres constant"],
-      medalii: 4,
-      aniExperienta: 2,
-      imagine: "/placeholder-athlete6.jpg",
-      featured: false
     }
   ]
+
+  // Use database data if available, otherwise use fallback
+  const atletiData = atleti.length > 0 ? atleti : fallbackAtleti
 
   const categorii = ['Toți', 'Copii', 'Juniori III', 'Juniori II', 'Juniori I', 'Seniori']
   const specializari = ['Toate', 'Sprint', 'Mijlociu fond', 'Lungul fond', 'Sărituri', 'Aruncări']
@@ -163,13 +207,13 @@ export default function Atleti() {
                   </div>
                   <CardTitle className="text-lg">{atlet.nume}</CardTitle>
                   <CardDescription>
-                    {atlet.varsta} ani • {atlet.aniExperienta} ani experiență
+                    {atlet.varsta} ani • {atlet.ani_experienta} ani experiență
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
                     <div className="text-sm text-muted-foreground mb-1">Record personal</div>
-                    <div className="font-medium">{atlet.recordPersonal}</div>
+                    <div className="font-medium">{atlet.record_personal}</div>
                   </div>
                   <div>
                     <div className="text-sm text-muted-foreground mb-1">Antrenor</div>
@@ -178,10 +222,15 @@ export default function Atleti() {
                   <div>
                     <div className="text-sm text-muted-foreground mb-1">Realizări notabile</div>
                     <ul className="text-sm space-y-1">
-                      {atlet.realizari.slice(0, 2).map((realizare, index) => (
+                      {(atlet.realizari || []).slice(0, 2).map((realizare: unknown, index: number) => (
                         <li key={index} className="flex items-start gap-2">
                           <Award className="h-3 w-3 text-secondary mt-1 flex-shrink-0" />
-                          <span>{realizare}</span>
+                          <span>
+                            {typeof realizare === 'string' 
+                              ? realizare 
+                              : (realizare as {descriere?: string}).descriere || 'Realizare'
+                            }
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -220,7 +269,7 @@ export default function Atleti() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Experiență:</span>
-                    <span className="font-medium">{atlet.aniExperienta} ani</span>
+                    <span className="font-medium">{atlet.ani_experienta} ani</span>
                   </div>
                   <Button size="sm" variant="outline" className="w-full" asChild>
                     <Link href={`/atleti/${atlet.id}`}>Vezi profil</Link>

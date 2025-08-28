@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Calendar, User } from 'lucide-react'
+import { Calendar, User, Clock } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 
@@ -84,7 +84,7 @@ export default async function Stiri() {
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6">Articole principale</h2>
           <div className="grid lg:grid-cols-2 gap-6">
-            {articoleData.filter((article) => article.featured).map((article) => {
+            {articoleData.filter((article: any) => article.featured).map((article: any) => {
               const articleDate = new Date(article.data_publicare)
               const formattedDate = articleDate.toLocaleDateString('ro-RO')
               
@@ -123,7 +123,7 @@ export default async function Stiri() {
         <div>
           <h2 className="text-2xl font-bold mb-6">Toate știrile</h2>
           <div className="grid gap-6">
-            {articoleData.map((article) => {
+            {articoleData.map((article: any) => {
               const articleDate = new Date(article.data_publicare)
               const formattedDate = articleDate.toLocaleDateString('ro-RO')
               

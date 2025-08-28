@@ -7,12 +7,14 @@ import { z } from 'zod'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 // Zod schemas for form validation
 const contactSchema = z.object({
   nume: z.string().min(2, 'Numele trebuie să aibă minim 2 caractere'),
   email: z.string().email('Adresa de email nu este validă'),
   telefon: z.string().min(10, 'Numărul de telefon trebuie să aibă minim 10 cifre'),
+  subiect: z.string().min(2, 'Subiectul trebuie să aibă minim 2 caractere'),
   mesaj: z.string().min(10, 'Mesajul trebuie să aibă minim 10 caractere'),
 })
 
@@ -33,6 +35,7 @@ type InscriereaForm = z.infer<typeof inscriereaSchema>
 export default function Contact() {
   const [activeTab, setActiveTab] = useState<'contact' | 'inscriere'>('contact')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   const contactForm = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
@@ -40,6 +43,7 @@ export default function Contact() {
       nume: '',
       email: '',
       telefon: '',
+      subiect: '',
       mesaj: '',
     },
   })
@@ -60,22 +64,76 @@ export default function Contact() {
 
   const onContactSubmit = async (data: ContactForm) => {
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    console.log('Contact form submitted:', data)
-    alert('Mesajul a fost trimis cu succes! Vă vom contacta în curând.')
-    contactForm.reset()
-    setIsSubmitting(false)
+    setSubmitStatus('idle')
+    
+    try {
+      const { error } = await supabase
+        .from('mesaje_contact')
+        .insert([
+          {
+            nume: data.nume,
+            email: data.email,
+            telefon: data.telefon,
+            subiect: data.subiect,
+            mesaj: data.mesaj,
+          }
+        ])
+
+      if (error) {
+        throw error
+      }
+
+      setSubmitStatus('success')
+      contactForm.reset()
+    } catch (error) {
+      console.error('Error submitting contact form:', error)
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const onInscriereaSubmit = async (data: InscriereaForm) => {
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    console.log('Registration form submitted:', data)
-    alert('Cererea de înscriere a fost trimisă cu succes! Vă vom contacta pentru a programa o ședință de probă.')
-    inscriereaForm.reset()
-    setIsSubmitting(false)
+    setSubmitStatus('idle')
+    
+    try {
+      const mesajInscriere = `
+Cerere de înscriere:
+- Nume atlet: ${data.numeAtlet}
+- Vârsta: ${data.varstaAtlet} ani
+- Nume părinte/tutore: ${data.numeParinte}
+- Email părinte: ${data.emailParinte}
+- Telefon părinte: ${data.telefonParinte}
+- Categoria dorită: ${data.categoria}
+- Experiență anterioară: ${data.experienta}
+${data.observatii ? `- Observații: ${data.observatii}` : ''}
+      `.trim()
+
+      const { error } = await supabase
+        .from('mesaje_contact')
+        .insert([
+          {
+            nume: data.numeParinte,
+            email: data.emailParinte,
+            telefon: data.telefonParinte,
+            subiect: `Cerere înscriere - ${data.numeAtlet}`,
+            mesaj: mesajInscriere,
+          }
+        ])
+
+      if (error) {
+        throw error
+      }
+
+      setSubmitStatus('success')
+      inscriereaForm.reset()
+    } catch (error) {
+      console.error('Error submitting registration form:', error)
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const contactInfo = [
@@ -230,6 +288,23 @@ export default function Contact() {
                     </div>
 
                     <div>
+                      <label htmlFor="subiect" className="block text-sm font-medium mb-2">
+                        Subiect *
+                      </label>
+                      <input
+                        id="subiect"
+                        type="text"
+                        className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                        {...contactForm.register('subiect')}
+                      />
+                      {contactForm.formState.errors.subiect && (
+                        <p className="text-destructive text-sm mt-1">
+                          {contactForm.formState.errors.subiect.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
                       <label htmlFor="mesaj" className="block text-sm font-medium mb-2">
                         Mesajul tău *
                       </label>
@@ -249,6 +324,18 @@ export default function Contact() {
                     <Button type="submit" className="w-full" disabled={isSubmitting}>
                       {isSubmitting ? 'Se trimite...' : 'Trimite mesajul'}
                     </Button>
+
+                    {/* Status Messages */}
+                    {submitStatus === 'success' && (
+                      <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
+                        ✅ Mesajul a fost trimis cu succes! Vă vom contacta în curând.
+                      </div>
+                    )}
+                    {submitStatus === 'error' && (
+                      <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+                        ❌ A apărut o eroare. Vă rugăm să încercați din nou sau să ne contactați telefonic.
+                      </div>
+                    )}
                   </form>
                 </CardContent>
               </Card>
@@ -418,6 +505,18 @@ export default function Contact() {
                     <Button type="submit" className="w-full" disabled={isSubmitting}>
                       {isSubmitting ? 'Se trimite...' : 'Trimite cererea de înscriere'}
                     </Button>
+
+                    {/* Status Messages */}
+                    {submitStatus === 'success' && (
+                      <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-md">
+                        ✅ Cererea de înscriere a fost trimisă cu succes! Vă vom contacta pentru a programa o ședință de probă.
+                      </div>
+                    )}
+                    {submitStatus === 'error' && (
+                      <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+                        ❌ A apărut o eroare. Vă rugăm să încercați din nou sau să ne contactați telefonic.
+                      </div>
+                    )}
                   </form>
                 </CardContent>
               </Card>
