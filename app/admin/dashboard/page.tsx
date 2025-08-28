@@ -249,6 +249,9 @@ export default function AdminDashboard() {
                   <Button variant="outline" className="w-full">
                     <Link href="/admin/rezultate">Vezi toate rezultatele</Link>
                   </Button>
+                  <Button variant="outline" size="sm" className="ml-2">
+                    <Link href="/admin/export/rezultate">📊 Export Excel</Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>

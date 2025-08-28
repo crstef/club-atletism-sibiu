@@ -77,6 +77,27 @@ export default function EvenimentDetalii({ params }: { params: { id: string } })
           </div>
         </div>
 
+        {/* Action Buttons */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button className="flex-1" size="lg">
+              <Link href="/contact" className="flex items-center">
+                📝 Înscrie-te la eveniment
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg">
+              <Link href="/evenimente" className="flex items-center">
+                📅 Vezi alte evenimente
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg">
+              <Link href={`/galerie/eveniment-${event.id}`} className="flex items-center">
+                📸 Galerie foto
+              </Link>
+            </Button>
+          </div>
+        </div>
+
         {/* Description */}
         <Card className="mb-8">
           <CardHeader>

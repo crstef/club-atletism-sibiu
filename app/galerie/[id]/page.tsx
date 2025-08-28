@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,7 +34,7 @@ interface GalerieData {
   videoclipuri: Video[];
 }
 
-export default async function GalerieIndividuala({ params }: Props) {
+export default function GalerieIndividuala({ params }: Props) {
   const id = params.id;
   
   // Datele galeriei - în realitate ar veni din baza de date
@@ -195,16 +197,40 @@ export default async function GalerieIndividuala({ params }: Props) {
                 <Card key={video.id} className="overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer">
                   <div className="relative aspect-video bg-gradient-to-br from-secondary/20 to-primary/20">
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center group-hover:bg-black/70 transition-colors">
+                      <Button 
+                        className="w-16 h-16 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+                        onClick={() => {
+                          // Simulez redarea video
+                          alert(`Se redă: ${video.titlu}\nDurata: ${video.durata}\n\nFuncționalitatea video va fi implementată cu un player real.`);
+                        }}
+                      >
                         <Play className="h-8 w-8 text-white ml-1" />
-                      </div>
+                      </Button>
                     </div>
                     <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
                       {video.durata}
                     </div>
+                    <div className="absolute top-2 left-2">
+                      <Button size="sm" variant="secondary" onClick={(e) => {
+                        e.stopPropagation();
+                        alert(`Descărcarea videoclipului "${video.titlu}" a început!`);
+                      }}>
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   <CardHeader>
                     <CardTitle className="text-lg">{video.titlu}</CardTitle>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline">
+                        <Share2 className="h-4 w-4 mr-1" />
+                        Partajează
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <Heart className="h-4 w-4 mr-1" />
+                        Like
+                      </Button>
+                    </div>
                   </CardHeader>
                 </Card>
               ))}
@@ -222,15 +248,56 @@ export default async function GalerieIndividuala({ params }: Props) {
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
               {galerie.fotografii.map((foto: Fotografie) => (
                 <Card key={foto.id} className="overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer">
-                  <div className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
+                  <div 
+                    className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden"
+                    onClick={() => {
+                      // Simulez deschiderea în modal/lightbox
+                      alert(`Deschidere foto în mărime mare:\n"${foto.alt}"\n\n${foto.descriere}\n\nÎn implementarea finală va fi un lightbox real.`);
+                    }}
+                  >
                     <div className="absolute inset-0 flex items-center justify-center">
                       <Camera className="h-12 w-12 text-primary/30" />
                     </div>
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                    
+                    {/* Action buttons overlay */}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex gap-1">
+                        <Button 
+                          size="sm" 
+                          variant="secondary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`Descărcarea fotografiei "${foto.alt}" a început!`);
+                          }}
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="secondary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(`${window.location.origin}/galerie/${id}/foto/${foto.id}`);
+                            alert('Link-ul fotografiei a fost copiat!');
+                          }}
+                        >
+                          <Share2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                   <CardContent className="p-3">
                     <h4 className="font-medium text-sm mb-1">{foto.alt}</h4>
-                    <p className="text-xs text-muted-foreground">{foto.descriere}</p>
+                    <p className="text-xs text-muted-foreground mb-2">{foto.descriere}</p>
+                    <div className="flex gap-1">
+                      <Button size="sm" variant="outline" className="text-xs flex-1">
+                        👁️ {Math.floor(Math.random() * 50) + 10} vizualizări
+                      </Button>
+                      <Button size="sm" variant="outline" className="text-xs">
+                        ❤️ {Math.floor(Math.random() * 20) + 1}
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
